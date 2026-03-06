@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="mini.css">
+</head>
+
+<body>
+
+    <div class="mini-widget detailed" id="miniWidget">
+
+        <!-- KOMPAKT MODU -->
+        <div class="compact-view" id="compactView" style="display:none;">
+            <div class="mini-city" id="miniCityCompact">İstanbul</div>
+            <div class="mini-countdown" id="miniCountdownCompact">00:00:00</div>
+            <div class="mini-next" id="miniNextCompact">Sonraki: --</div>
+        </div>
+
+        <!-- DETAYLI MODU -->
+        <div class="detailed-view" id="detailedView">
+            <div class="mini-header">
+                <div class="mini-city" id="miniCity">İstanbul</div>
+                <div class="mini-date" id="miniDate"></div>
+            </div>
+
+            <div class="mini-countdown-section">
+                <div class="mini-countdown-label" id="miniCountdownLabel">Sonraki Ezan</div>
+                <div class="mini-countdown" id="miniCountdown">00:00:00</div>
+            </div>
+
+            <div class="mini-times" id="miniTimes">
+                <div class="mini-time-row" data-key="imsak"><span class="mini-time-name">İmsak</span><span
+                        class="mini-time-val" id="mt-imsak">--:--</span></div>
+                <div class="mini-time-row" data-key="gunes"><span class="mini-time-name">Güneş</span><span
+                        class="mini-time-val" id="mt-gunes">--:--</span></div>
+                <div class="mini-time-row" data-key="ogle"><span class="mini-time-name">Öğle</span><span
+                        class="mini-time-val" id="mt-ogle">--:--</span></div>
+                <div class="mini-time-row" data-key="ikindi"><span class="mini-time-name">İkindi</span><span
+                        class="mini-time-val" id="mt-ikindi">--:--</span></div>
+                <div class="mini-time-row" data-key="aksam"><span class="mini-time-name">Akşam</span><span
+                        class="mini-time-val" id="mt-aksam">--:--</span></div>
+                <div class="mini-time-row" data-key="yatsi"><span class="mini-time-name">Yatsı</span><span
+                        class="mini-time-val" id="mt-yatsi">--:--</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const VAKIT_KEYS = ['imsak', 'gunes', 'ogle', 'ikindi', 'aksam', 'yatsi'];
+        const VAKIT_LABELS = { imsak: 'İmsak', gunes: 'Güneş', ogle: 'Öğle', ikindi: 'İkindi', aksam: 'Akşam', yatsi: 'Yatsı' };
+        let prayerTimes = {};
+        let currentMode = 'detailed';
+
+        // Prayer times update
+        window.electronAPI.onPrayerTimesUpdate((data) => {
+            if (data.cityName) {
+                document.getElementById('miniCity').textContent = data.cityName;
+                document.getElementById('miniCityCompact').textContent = data.cityName;
+            }
+            if (data.times) {
+                prayerTimes = data.times;
+                for (const k of VAKIT_KEYS) {
+                    const el = document.getElementById('mt-' + k);
+                    if (el && prayerTimes[k]) el.textContent = prayerTimes[k].time;
+                }
+            }
+        });
+
+        // Display mode changed
+        window.electronAPI.onDisplayModeChanged((mode) => {
+            currentMode = mode;
+            const widget = document.getElementById('miniWidget');
+            widget.className = 'mini-widget ' + mode;
+            document.getElementById('compactView').style.display = mode === 'compact' ? 'block' : 'none';
+            document.getElementById('detailedView').style.display = mode === 'detailed' ? 'block' : 'none';
+        });
+
+        // Style update
+        window.electronAPI.onStyleUpdate((data) => {
+            const widget = document.getElementById('miniWidget');
+            if (data.borderColor) widget.style.borderColor = data.borderColor;
+        });
+
+        // Scale change
+        window.electronAPI.onScaleChanged((scale) => {
+            document.body.style.transform = `scale(${scale})`;
+            document.body.style.transformOrigin = 'top left';
+        });
+
+        // Date
+        const dateEl = document.getElementById('miniDate');
+        if (dateEl) {
+            const now = new Date();
+            dateEl.textContent = now.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' });
+        }
+
+        // Countdown interval
+        setInterval(() => {
+            const now = new Date();
+            const cm = now.getHours() * 60 + now.getMinutes();
+            const cs = now.getSeconds();
+            let nextKey = null;
+
+            for (const k of VAKIT_KEYS) {
+                if (!prayerTimes[k]) continue;
+                const [h, m] = prayerTimes[k].time.split(':').map(Number);
+                if (h * 60 + m > cm || (h * 60 + m === cm && cs < 60)) {
+                    nextKey = k;
+                    break;
+                }
+            }
+
+            // Update card states
+            document.querySelectorAll('.mini-time-row').forEach(row => {
+                row.classList.remove('active', 'passed');
+                const rk = row.dataset.key;
+                if (!prayerTimes[rk]) return;
+                const [rh, rm] = prayerTimes[rk].time.split(':').map(Number);
+                if (rh * 60 + rm <= cm) row.classList.add('passed');
+                if (rk === nextKey) row.classList.add('active');
+            });
+
+            let diff = 0;
+            let label = 'Sonraki Ezan';
+
+            if (!nextKey && prayerTimes.imsak) {
+                // All passed → count to imsak
+                const [ih, im] = prayerTimes.imsak.time.split(':').map(Number);
+                const toMidnight = (24 * 60 * 60) - (cm * 60 + cs);
+                diff = toMidnight + (ih * 60 + im) * 60 - 15 * 60;
+                if (diff < 0) diff = toMidnight + (ih * 60 + im) * 60;
+                label = 'Sahura Kalan';
+            } else if (nextKey && prayerTimes[nextKey]) {
+                const [nh, nm] = prayerTimes[nextKey].time.split(':').map(Number);
+                diff = (nh * 60 + nm) * 60 - (cm * 60 + cs);
+                label = `${VAKIT_LABELS[nextKey]}`;
+            }
+
+            if (diff < 0) diff = 0;
+            const h = String(Math.floor(diff / 3600)).padStart(2, '0');
+            const m = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+            const s = String(diff % 60).padStart(2, '0');
+            const timeStr = `${h}:${m}:${s}`;
+
+            document.getElementById('miniCountdown').textContent = timeStr;
+            document.getElementById('miniCountdownCompact').textContent = timeStr;
+            document.getElementById('miniCountdownLabel').textContent = label;
+            document.getElementById('miniNextCompact').textContent = label;
+        }, 1000);
+    </script>
+</body>
+
+</html>

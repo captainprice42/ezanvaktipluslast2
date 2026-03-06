@@ -1,0 +1,19 @@
+{
+  "name": "ezan-vakti-plus",
+  "version": "2.0.0",
+  "description": "Ezan Vakti Plus - Türkiye Namaz Vakitleri Uygulaması",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "author": "Ezan Vakti Plus",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.3",
+    "firebase": "^12.10.0"
+  }
+}

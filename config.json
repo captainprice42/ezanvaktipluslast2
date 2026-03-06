@@ -1,0 +1,78 @@
+{
+  "lastCity": "konya",
+  "lastCityName": "Konya",
+  "date": "2026-03-06",
+  "notifications": {
+    "imsak": {
+      "enabled": true,
+      "minutesBefore": 0,
+      "soundFile": "sabah.mp3"
+    },
+    "gunes": {
+      "enabled": false,
+      "minutesBefore": 0,
+      "soundFile": ""
+    },
+    "ogle": {
+      "enabled": true,
+      "minutesBefore": 5,
+      "soundFile": "ogle.mp3"
+    },
+    "ikindi": {
+      "enabled": true,
+      "minutesBefore": 5,
+      "soundFile": "ikindi.mp3"
+    },
+    "aksam": {
+      "enabled": true,
+      "minutesBefore": 10,
+      "soundFile": "aksam.mp3"
+    },
+    "yatsi": {
+      "enabled": true,
+      "minutesBefore": 5,
+      "soundFile": "yatsi.mp3"
+    }
+  },
+  "miniWidget": {
+    "enabled": false,
+    "borderColor": "#2563eb",
+    "opacity": 0.63,
+    "posX": 2266,
+    "posY": 15,
+    "displayMode": "compact",
+    "scale": 1,
+    "locked": false
+  },
+  "theme": "dark",
+  "autoLaunch": false,
+  "onboardingDone": true,
+  "language": "tr",
+  "prayerTracking": true,
+  "cumaReminder": true,
+  "ramadanMode": true,
+  "lowResourceMode": false,
+  "maxRAM": 50,
+  "prayerLog": {
+    "2026-03-02": {
+      "yatsi": false
+    },
+    "2026-03-06": {
+      "yatsi": true
+    }
+  },
+  "kazaNamazlari": {
+    "imsak": 0,
+    "ogle": 0,
+    "ikindi": 0,
+    "aksam": 0,
+    "yatsi": 0
+  },
+  "zikirmatik": {
+    "count": 0,
+    "target": 33
+  },
+  "dynamicIsland": true,
+  "islandScale": 1,
+  "glassOpacity": 77
+}

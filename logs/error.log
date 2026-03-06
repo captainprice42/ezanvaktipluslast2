@@ -1,0 +1,63 @@
+[2026-03-01T18:53:24.763Z] [INFO] [app] Uygulama başlatıldı v2.0.0
+[2026-03-01T18:53:40.834Z] [INFO] [updater] Güncelleme kontrolü başlatıldı
+[2026-03-01T18:53:41.021Z] [INFO] [updater] Sonuç: hasUpdate=false, latest=2.0.0
+[2026-03-01T19:32:53.492Z] [INFO] [app] Uygulama başlatıldı v2.0.0
+[2026-03-01T19:33:25.395Z] [INFO] [updater] Güncelleme kontrolü
+[2026-03-01T19:33:25.742Z] [INFO] [updater] Sonuç: hasUpdate=false, latest=2.0.0
+[2026-03-01T20:23:09.407Z] [INFO] [app] Uygulama başlatıldı v2.0.0
+[2026-03-01T20:23:21.545Z] [INFO] [updater] Güncelleme kontrolü
+[2026-03-01T20:23:21.815Z] [INFO] [updater] Sonuç: hasUpdate=false, latest=2.0.0
+[2026-03-01T20:26:00.014Z] [INFO] [app] Uygulama başlatıldı v2.0.0
+[2026-03-02T16:51:35.335Z] [INFO] [app] Uygulama başlatıldı v2.0.0
+[2026-03-02T17:20:16.604Z] [INFO] [updater] Güncelleme kontrolü
+[2026-03-02T17:20:17.059Z] [INFO] [updater] Sonuç: hasUpdate=false, latest=2.0.0
+[2026-03-02T18:22:20.065Z] [INFO] [updater] Güncelleme kontrolü
+[2026-03-02T18:22:25.805Z] [INFO] [updater] Sonuç: hasUpdate=false, latest=2.0.0
+[2026-03-02T18:23:04.680Z] [INFO] [updater] Güncelleme kontrolü
+[2026-03-02T18:23:14.747Z] [INFO] [updater] Sonuç: hasUpdate=false, latest=2.0.0
+[2026-03-02T19:12:09.838Z] [INFO] [app] Uygulama başlatıldı v2.0.0
+[2026-03-02T19:17:29.532Z] [INFO] [app] Uygulama başlatıldı v2.0.0
+[2026-03-02T19:36:36.323Z] [INFO] [app] Uygulama başlatıldı v2.0.0
+[2026-03-02T19:47:38.251Z] [INFO] [app] Uygulama başlatıldı v2.0.0
+[2026-03-06T10:33:29.395Z] [INFO] [app] Uygulama başlatıldı v2.0.0
+[2026-03-06T10:35:20.265Z] [INFO] [updater] Güncelleme kontrolü
+[2026-03-06T10:35:20.722Z] [INFO] [updater] Sonuç: hasUpdate=false, latest=2.0.0
+[2026-03-06T10:42:36.395Z] [INFO] [app] Uygulama başlatıldı v2.0.0
+[2026-03-06T10:48:21.382Z] [INFO] [updater] Güncelleme kontrolü
+[2026-03-06T10:48:21.839Z] [INFO] [updater] Sonuç: hasUpdate=false, latest=2.0.0
+[2026-03-06T10:48:32.536Z] [INFO] [updater] Güncelleme kontrolü
+[2026-03-06T10:48:32.703Z] [INFO] [updater] Sonuç: hasUpdate=false, latest=2.0.0
+[2026-03-06T10:50:53.325Z] [INFO] [app] Uygulama başlatıldı v2.0.0
+[2026-03-06T11:27:03.325Z] [INFO] [app] Uygulama başlatıldı v2.0.0
+[2026-03-06T11:27:41.157Z] [INFO] [updater] Güncelleme kontrolü
+[2026-03-06T11:27:41.333Z] [INFO] [updater] Sonuç: hasUpdate=false, latest=2.0.0
+[2026-03-06T11:27:45.617Z] [INFO] [updater] Güncelleme kontrolü
+[2026-03-06T11:27:45.784Z] [INFO] [updater] Sonuç: hasUpdate=false, latest=2.0.0
+[2026-03-06T11:32:22.064Z] [INFO] [updater] Güncelleme kontrolü
+[2026-03-06T11:32:22.470Z] [INFO] [updater] Sonuç: hasUpdate=false, latest=2.0.0
+[2026-03-06T11:32:30.356Z] [INFO] [app] Uygulama kapatılıyor
+[2026-03-06T11:56:42.000Z] [INFO] [app] Uygulama başlatıldı v2.0.0
+[2026-03-06T11:58:59.953Z] [INFO] [updater] Güncelleme kontrolü
+[2026-03-06T11:59:00.403Z] [INFO] [updater] Sonuç: hasUpdate=false, latest=2.0.0
+[2026-03-06T12:18:21.143Z] [INFO] [app] Uygulama başlatıldı v2.0.0
+[2026-03-06T13:25:01.867Z] [INFO] [app] Uygulama kapatılıyor
+[2026-03-06T16:16:43.540Z] [INFO] [app] Uygulama başlatıldı v2.0.0
+[2026-03-06T16:18:23.390Z] [INFO] [app] Uygulama kapatılıyor
+[2026-03-06T18:11:05.012Z] [INFO] [app] Uygulama başlatıldı v2.0.0
+[2026-03-06T18:13:12.606Z] [INFO] [updater] Güncelleme kontrolü
+[2026-03-06T18:13:13.041Z] [INFO] [updater] Sonuç: hasUpdate=false, latest=2.0.0
+[2026-03-06T18:46:43.902Z] [INFO] [app] Uygulama kapatılıyor
+[2026-03-06T18:46:59.509Z] [INFO] [app] Uygulama başlatıldı v2.0.0
+[2026-03-06T18:51:13.105Z] [INFO] [app] Uygulama kapatılıyor
+[2026-03-06T18:57:19.810Z] [INFO] [app] Uygulama başlatıldı v2.0.0
+[2026-03-06T19:08:07.462Z] [INFO] [app] Uygulama başlatıldı v2.0.0
+[2026-03-06T19:08:12.298Z] [INFO] [app] Uygulama kapatılıyor
+[2026-03-06T19:16:29.349Z] [INFO] [app] Uygulama kapatılıyor
+[2026-03-06T19:25:49.641Z] [INFO] [app] Uygulama başlatıldı v2.0.0
+[2026-03-06T19:28:09.961Z] [INFO] [app] Uygulama başlatıldı v2.0.0
+[2026-03-06T19:37:38.776Z] [INFO] [app] Uygulama başlatıldı v2.0.0
+[2026-03-06T19:41:27.364Z] [INFO] [updater] Güncelleme kontrolü
+[2026-03-06T19:41:27.842Z] [INFO] [updater] Sonuç: hasUpdate=false, latest=2.0.0
+[2026-03-06T19:48:17.662Z] [INFO] [app] Uygulama başlatıldı v2.0.0
+[2026-03-06T19:49:03.154Z] [INFO] [updater] Güncelleme kontrolü
+[2026-03-06T19:49:03.592Z] [INFO] [updater] Sonuç: hasUpdate=false, latest=2.0.0

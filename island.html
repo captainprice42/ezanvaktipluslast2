@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, system-ui, sans-serif;
+            background: transparent;
+            overflow: hidden;
+            user-select: none;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .island-wrap {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%) scale(var(--island-scale, 1.0));
+            transform-origin: top center;
+            z-index: 9999;
+            cursor: pointer;
+            -webkit-app-region: no-drag;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ===== RGB GRADIENT GLOW ===== */
+        .island-glow {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: calc(100% + 24px);
+            border-radius: 50px;
+            pointer-events: none;
+            opacity: 0;
+            filter: blur(25px);
+            transition: opacity 0.6s ease, width 0.6s ease, height 0.6s ease;
+        }
+
+        .island-glow.pill-glow {
+            opacity: 0.6;
+            background: radial-gradient(ellipse at center, rgba(59, 130, 246, 0.25) 0%, rgba(16, 185, 129, 0.15) 40%, transparent 70%);
+            width: 110%;
+        }
+
+        .island-glow.full-glow {
+            opacity: 1;
+            background: conic-gradient(from 0deg, #ef4444, #f59e0b, #10b981, #3b82f6, #8b5cf6, #ef4444);
+            width: calc(100% + 4px);
+            height: calc(100% + 4px);
+            top: -2px;
+            border-radius: 34px;
+            filter: none;
+            animation: rgbHueRotate 4s linear infinite;
+        }
+
+        @keyframes rgbHueRotate {
+            0% {
+                filter: hue-rotate(0deg);
+            }
+
+            100% {
+                filter: hue-rotate(360deg);
+            }
+        }
+
+        /* ===== THE ISLAND BODY ===== */
+        .island {
+            position: relative;
+            background: #000;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(255, 255, 255, 0.06) inset;
+            /* Default: NOTCH state */
+            width: 20px;
+            height: 20px;
+            border-radius: 0 0 50% 50%;
+            margin-top: 0;
+            transition: width 0.5s cubic-bezier(0.32, 0.72, 0, 1), height 0.5s cubic-bezier(0.32, 0.72, 0, 1), border-radius 0.5s cubic-bezier(0.32, 0.72, 0, 1), margin-top 0.4s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.5s ease;
+        }
+
+        .island::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            border: 0.5px solid rgba(255, 255, 255, 0.05);
+            pointer-events: none;
+        }
+
+        /* ===== STATE: NOTCH (teardrop) ===== */
+        .island.state-notch {
+            width: 22px;
+            height: 16px;
+            border-radius: 0 0 50% 50%;
+            margin-top: 0;
+        }
+
+        .island.state-notch:hover {
+            width: 32px;
+            height: 20px;
+            border-radius: 0 0 16px 16px;
+        }
+
+        /* ===== STATE: PILL (countdown) ===== */
+        .island.state-pill {
+            width: 260px;
+            height: 44px;
+            border-radius: 22px;
+            margin-top: 6px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(255, 255, 255, 0.08) inset;
+        }
+
+        /* ===== STATE: FULL (all details) ===== */
+        .island.state-full {
+            width: 360px;
+            height: 220px;
+            border-radius: 32px;
+            margin-top: 6px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.8), 0 0 0 0.5px rgba(255, 255, 255, 0.1) inset;
+        }
+
+        /* ===== CONTENT LAYERS ===== */
+        .layer {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .layer.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* --- Notch dot --- */
+        .notch-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* --- Pill content --- */
+        .pill-layer {
+            padding: 0 16px;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .pill-indicator {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #34d399;
+            flex-shrink: 0;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.4;
+                transform: scale(0.7);
+            }
+        }
+
+        .pill-icon {
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .pill-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: #fff;
+            white-space: nowrap;
+            flex: 1;
+        }
+
+        .pill-time {
+            font-size: 12px;
+            font-weight: 700;
+            color: #34d399;
+            font-variant-numeric: tabular-nums;
+            flex-shrink: 0;
+            margin-left: auto;
+        }
+
+        /* --- Full content --- */
+        .full-layer {
+            flex-direction: column;
+            padding: 14px 18px;
+            width: 100%;
+            height: 100%;
+            align-items: stretch;
+            justify-content: flex-start;
+        }
+
+        .full-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .full-header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .full-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            background: linear-gradient(135deg, #92400e, #d4af37);
+            box-shadow: 0 2px 8px rgba(212, 175, 55, 0.2);
+        }
+
+        .full-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.2;
+        }
+
+        .full-subtitle {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.45);
+            line-height: 1.2;
+        }
+
+        .full-countdown {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            font-variant-numeric: tabular-nums;
+            background: linear-gradient(135deg, #34d399, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
+
+        /* Prayer times list */
+        .full-times {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            flex: 1;
+            overflow: hidden;
+            margin-top: 6px;
+        }
+
+        .time-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            transition: background 0.2s;
+        }
+
+        .time-row.active-row {
+            background: #1e3a8a;
+            box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
+        }
+
+        .time-row.passed-row {
+            opacity: 0.5;
+        }
+
+        .time-name {
+            font-weight: 500;
+            color: #fff;
+        }
+
+        .time-val {
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .time-remaining {
+            font-size: 10px;
+            font-weight: 600;
+            color: #34d399;
+            margin-left: 8px;
+        }
+
+        .time-row.active-row .time-remaining {
+            color: #60a5fa;
+        }
+
+        .time-row.passed-row .time-val {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Progress bar at bottom */
+        .island-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.04);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .island-progress.visible {
+            opacity: 1;
+        }
+
+        .island-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #34d399, #3b82f6, #8b5cf6);
+            border-radius: 1px;
+            width: 100%;
+            transition: width linear;
+        }
+
+        /* ===== LIGHT THEME ===== */
+        [data-theme="light"] .island {
+            background: #ffffff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1), 0 0 0 0.5px rgba(0, 0, 0, 0.05) inset;
+        }
+
+        [data-theme="light"] .pill-name,
+        [data-theme="light"] .full-title,
+        [data-theme="light"] .time-name {
+            color: #1f2937;
+        }
+
+        [data-theme="light"] .full-subtitle {
+            color: rgba(31, 41, 55, 0.5);
+        }
+
+        [data-theme="light"] .time-val {
+            color: #4b5563;
+        }
+
+        [data-theme="light"] .full-icon {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="light"] .time-row.active-row {
+            background: #f3f4f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="island-wrap" id="wrap">
+        <div class="island-glow" id="glow"></div>
+        <div class="island state-notch" id="island">
+
+            <!-- Layer: Notch -->
+            <div class="layer visible" id="layerNotch">
+                <div class="notch-dot"></div>
+            </div>
+
+            <!-- Layer: Pill -->
+            <div class="layer pill-layer" id="layerPill">
+                <div class="pill-indicator" id="pillInd"></div>
+                <span class="pill-icon" id="pillIcon">🕌</span>
+                <span class="pill-name" id="pillName">...</span>
+                <span class="pill-time" id="pillTime">--:--:--</span>
+            </div>
+
+            <!-- Layer: Full -->
+            <div class="layer full-layer" id="layerFull">
+                <div class="full-header">
+                    <div class="full-header-left">
+                        <div class="full-icon" id="fullIcon">🕌</div>
+                        <div>
+                            <div class="full-title" id="fullTitle">Ezan Vakti Plus</div>
+                            <div class="full-subtitle" id="fullSub">Yükleniyor...</div>
+                        </div>
+                    </div>
+                    <div class="full-countdown" id="fullCountdown">--:--:--</div>
+                </div>
+                <div class="full-times" id="fullTimes">
+                    <div class="time-row" id="tr-imsak"><span class="time-name">İmsak</span><span
+                            class="time-val">05:30</span></div>
+                    <div class="time-row" id="tr-gunes"><span class="time-name">Güneş</span><span
+                            class="time-val">07:00</span></div>
+                    <div class="time-row" id="tr-ogle"><span class="time-name">Öğle</span><span
+                            class="time-val">12:30</span></div>
+                    <div class="time-row" id="tr-ikindi"><span class="time-name">İkindi</span><span
+                            class="time-val">15:45</span></div>
+                    <div class="time-row" id="tr-aksam"><span class="time-name">Akşam</span><span
+                            class="time-val">18:25</span></div>
+                    <div class="time-row" id="tr-yatsi"><span class="time-name">Yatsı</span><span
+                            class="time-val">19:50</span></div>
+                </div>
+            </div>
+
+            <div class="island-progress" id="progress">
+                <div class="island-progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const island = document.getElementById('island');
+        const glow = document.getElementById('glow');
+        const layerNotch = document.getElementById('layerNotch');
+        const layerPill = document.getElementById('layerPill');
+        const layerFull = document.getElementById('layerFull');
+
+        // States: 'notch' | 'pill' | 'full'
+        let state = 'notch';
+        let autoTimer = null;
+
+        function setState(newState) {
+            state = newState;
+            // Remove all state classes
+            island.classList.remove('state-notch', 'state-pill', 'state-full');
+            layerNotch.classList.remove('visible');
+            layerPill.classList.remove('visible');
+            layerFull.classList.remove('visible');
+            glow.classList.remove('pill-glow', 'full-glow');
+
+            clearTimeout(autoTimer);
+
+            if (newState === 'notch') {
+                island.classList.add('state-notch');
+                layerNotch.classList.add('visible');
+            } else if (newState === 'pill') {
+                island.classList.add('state-pill');
+                layerPill.classList.add('visible');
+                glow.classList.add('pill-glow');
+                // Auto-collapse to notch after 5s
+                autoTimer = setTimeout(() => setState('notch'), 5000);
+            } else if (newState === 'full') {
+                island.classList.add('state-full');
+                layerFull.classList.add('visible');
+                glow.classList.add('full-glow');
+                // Auto-collapse to pill after 10s
+                autoTimer = setTimeout(() => setState('pill'), 10000);
+            }
+        }
+
+        // Click state machine: notch→pill→full→pill
+        island.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (state === 'notch') setState('pill');
+            else if (state === 'pill') setState('full');
+            else if (state === 'full') setState('pill');
+        });
+
+        // Mouse enter/leave for game click-through
+        island.addEventListener('mouseenter', () => {
+            window.electronAPI.setIslandMouseIgnore(false);
+        });
+        island.addEventListener('mouseleave', () => {
+            window.electronAPI.setIslandMouseIgnore(true);
+        });
+
+        /* ===== DATA HANDLING ===== */
+        function updateContent(data) {
+            if (data.theme) {
+                document.documentElement.setAttribute('data-theme', data.theme);
+            }
+            if (data.scale) {
+                document.documentElement.style.setProperty('--island-scale', data.scale);
+            }
+            if (data.nextName) document.getElementById('pillName').textContent = data.nextName;
+            if (data.countdown) document.getElementById('pillTime').textContent = data.countdown;
+            if (data.icon) {
+                document.getElementById('pillIcon').textContent = data.icon;
+                document.getElementById('fullIcon').textContent = data.icon;
+            }
+            if (data.title) document.getElementById('fullTitle').textContent = data.title;
+            if (data.cityName) document.getElementById('fullSub').textContent = data.cityName;
+            if (data.countdownBig) document.getElementById('fullCountdown').textContent = data.countdownBig;
+
+            // Update prayer times rows
+            if (data.times) {
+                const keys = ['imsak', 'gunes', 'ogle', 'ikindi', 'aksam', 'yatsi'];
+                const labels = data.labels || { imsak: 'İmsak', gunes: 'Güneş', ogle: 'Öğle', ikindi: 'İkindi', aksam: 'Akşam', yatsi: 'Yatsı' };
+                keys.forEach(k => {
+                    const row = document.getElementById('tr-' + k);
+                    if (!row) return;
+                    const t = data.times[k];
+                    if (t) {
+                        row.querySelector('.time-name').textContent = labels[k] || k;
+                        row.querySelector('.time-val').textContent = t.time || '';
+                        row.classList.remove('active-row', 'passed-row');
+
+                        // Check passed/active from data
+                        if (t.active) row.classList.add('active-row');
+                        if (t.passed) row.classList.add('passed-row');
+
+                        // Add remaining time for active
+                        let rem = row.querySelector('.time-remaining');
+                        if (t.active && data.countdown) {
+                            if (!rem) { rem = document.createElement('span'); rem.className = 'time-remaining'; row.appendChild(rem); }
+                            rem.textContent = data.countdown;
+                        } else if (rem) { rem.remove(); }
+                    }
+                });
+            }
+        }
+
+        // Show notification: pop open to pill, then auto cycle
+        function showNotification(data) {
+            updateContent(data);
+            // Animate to pill state
+            setState('pill');
+
+            // Show progress bar
+            if (data.duration) {
+                const prog = document.getElementById('progress');
+                const bar = document.getElementById('progressBar');
+                prog.classList.add('visible');
+                bar.style.transition = 'none';
+                bar.style.width = '100%';
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        bar.style.transition = `width ${data.duration}ms linear`;
+                        bar.style.width = '0%';
+                    });
+                });
+                setTimeout(() => prog.classList.remove('visible'), data.duration);
+            }
+        }
+
+        // IPC listeners
+        window.electronAPI.onDynamicIslandShow((data) => showNotification(data));
+        window.electronAPI.onDynamicIslandUpdate((data) => updateContent(data));
+        if (window.electronAPI.onIslandForceState) {
+            window.electronAPI.onIslandForceState((action) => {
+                if (action === 'expand') {
+                    if (state === 'notch') setState('pill');
+                    else if (state === 'pill') setState('full');
+                } else if (action === 'collapse') {
+                    if (state === 'full') setState('pill');
+                    else if (state === 'pill') setState('notch');
+                }
+            });
+        }
+
+        // Start in notch state
+        setState('notch');
+    </script>
+</body>
+
+</html>
